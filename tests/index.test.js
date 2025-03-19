@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-// const BACKEND_URL = "http://localhost:3000"
+const BACKEND_URL = "http://localhost:3000"
 
 // describe("Authentication", ()=> {
 //     test('User is able to singup only once', async()=>{
@@ -84,7 +84,7 @@ describe("User Information endpoints", ()=> {
             password
         })
         token = response.data.token
-        
+
         const avatarResponse = await axios.post(`${BACKEND_URL}/api/v1/admin/avatar`, {
             "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3RFDZM21teuCMFYx_AROjt-AzUwDBROFww&s",
             "name": "Timmy"
@@ -110,11 +110,28 @@ describe("User Information endpoints", ()=> {
         expect(response.statusCode).toBe(400)
     })
 
-    test("user can update their metadata with the right avatar id", ()=>{
-        expect(1).toBe(1)
+    test("User can update their metadata with the right avatar id", async () => {
+        const response = await axios.post(`${BACKEND_URL}/api/v1/user/metadata`, {
+            avatarId
+        }, {
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        })
+
+        expect(response.status).toBe(200)
     })
-    test("test 3", ()=>{
-        expect(1).toBe(1)
+
+    test("User is not able to update their metadata if the auth header is not present", async () => {
+        const response = await axios.post(`${BACKEND_URL}/api/v1/user/metadata`, {
+            avatarId
+        })
+
+        expect(response.status).toBe(403)
+    })
+
+    test("test 3", () => {
+        
     })
 
 })
